@@ -52,7 +52,6 @@ public class Product {
         return price;
     }
 
-    // TODO: garantir que os valores salvos possam possuir tanto '.' quanto ','
     public void setPrice(Double price) {
         this.price = price;
     }
