@@ -1,10 +1,10 @@
 package br.com.order.catalog.management.controller;
 
 import br.com.order.catalog.management.dto.OrderDTO;
+import br.com.order.catalog.management.service.DefaultProductService;
 import br.com.order.catalog.management.service.OrderService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;

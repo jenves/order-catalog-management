@@ -2,7 +2,7 @@ package br.com.order.catalog.management.controller;
 
 import br.com.order.catalog.management.dto.ProductDTO;
 import br.com.order.catalog.management.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
@@ -12,6 +12,7 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 
 import jakarta.validation.Valid;
+
 import java.util.UUID;
 
 @RestController

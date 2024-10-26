@@ -7,24 +7,22 @@ import jakarta.validation.constraints.Positive;
 
 import java.util.UUID;
 
-public class ProductDTO {
+public record ProductDTO(
+        UUID id,
 
-    public ProductDTO() {}
+        @NotBlank(message = "Product name is required")
+        String name,
 
-    private UUID id;
+        @NotNull(message = "Product price is required")
+        @Positive(message = "Product price must be positive")
+        Double price,
 
-    @NotBlank(message = "Product name is required")
-    private String name;
+        @NotNull(message = "Product type is required")
+        ProductType type,
 
-    @NotNull(message = "Product price is required")
-    @Positive(message = "Product price must be positive")
-    private Double price;
-
-    @NotNull(message = "Product type is required")
-    private ProductType type;
-
-    @NotNull(message = "Product active is required")
-    private Boolean active;
+        @NotNull(message = "Product active is required")
+        Boolean active
+) {
 
     public UUID getId() {
         return id;

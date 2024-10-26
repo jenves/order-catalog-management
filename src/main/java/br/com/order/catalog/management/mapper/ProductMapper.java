@@ -2,21 +2,16 @@ package br.com.order.catalog.management.mapper;
 
 import br.com.order.catalog.management.dto.ProductDTO;
 import br.com.order.catalog.management.entity.Product;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
-public class ProductMapper {
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
-    @Autowired
-    private ModelMapper modelMapper;
+@Mapper(componentModel = "spring")
+public interface ProductMapper {
 
-    public ProductDTO toDTO(Product product) {
-        return modelMapper.map(product, ProductDTO.class);
-    }
+    ProductMapper INSTANCE = Mappers.getMapper(ProductMapper.class);
 
-    public Product toEntity(ProductDTO productDTO) {
-        return modelMapper.map(productDTO, Product.class);
-    }
+    ProductDTO toDTO(Product product);
+
+    Product toEntity(ProductDTO productDTO);
 }
