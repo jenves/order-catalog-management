@@ -19,10 +19,13 @@ import java.util.UUID;
 @RequestMapping("/products")
 public class ProductController {
 
-    @Autowired
-    private ProductService productService;
+  private final ProductService productService;
 
-    @GetMapping("/{id}")
+  public ProductController(ProductService productService) {
+    this.productService = productService;
+  }
+
+  @GetMapping("/{id}")
     public EntityModel<ProductDTO> findById(@PathVariable("id") UUID id) {
         ProductDTO productDTO = productService.getProductById(id);
         EntityModel<ProductDTO> resource = EntityModel.of(productDTO);

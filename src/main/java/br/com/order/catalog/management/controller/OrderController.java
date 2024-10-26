@@ -24,10 +24,13 @@ import java.util.UUID;
 @RequestMapping("/orders")
 public class OrderController {
 
-    @Autowired
-    private OrderService orderService;
+  private final OrderService orderService;
 
-    @GetMapping("/{id}")
+  public OrderController(OrderService orderService) {
+    this.orderService = orderService;
+  }
+
+  @GetMapping("/{id}")
     public EntityModel<OrderDTO> findById(@PathVariable("id") UUID id) {
         OrderDTO orderDTO = orderService.getOrderById(id);
         EntityModel<OrderDTO> resource = EntityModel.of(orderDTO);
