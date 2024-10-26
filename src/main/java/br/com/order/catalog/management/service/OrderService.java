@@ -1,8 +1,8 @@
 package br.com.order.catalog.management.service;
 
-import br.com.order.catalog.management.dto.OrderDTO;
+import br.com.order.catalog.management.domain.order.Order;
 
-import jakarta.validation.Valid;
+import br.com.order.catalog.management.domain.order.PreOrder;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,13 +11,13 @@ import java.util.UUID;
 
 public interface OrderService {
 
-  OrderDTO getOrderById(UUID id);
+  Order getOrderById(UUID id);
 
-  Page<OrderDTO> getOrders(Pageable pageable);
+  Page<Order> getOrders(Pageable pageable);
 
-  OrderDTO saveOrder(@Valid OrderDTO orderToBeSaved);
+  Order createOrder(PreOrder preOrder);
 
-  OrderDTO updateOrder(UUID id, @Valid OrderDTO orderToBeChanged);
+  Order updateOrder(UUID id, PreOrder preOrder);
 
   void deleteOrderById(UUID id);
 }

@@ -20,6 +20,7 @@ para as seguintes entidades: produto/serviço, pedido e itens de pedido.
 requisições (mínimo BAD REQUEST)
 
 • Todos as entidades deverão ter um ID único do tipo UUID gerado automaticamente
+(Mudar para o UUIDV7)
 
 • No cadastro de produto/serviço deverá ter uma indicação para diferenciar um produto de
 um serviço
@@ -33,6 +34,7 @@ itens que sejam produto (não serviço); o desconto será sobre o valor total do
 • Não deve ser possível excluir um produto/serviço se ele estiver associado a algum pedido
 
 • Não deve ser possível adicionar um produto desativado em um pedido
+
 Critérios de aceitação
 
 • A prova deverá ser entregue completa (todos os itens resolvidos)

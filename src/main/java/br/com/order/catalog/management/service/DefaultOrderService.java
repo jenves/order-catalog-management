@@ -1,19 +1,20 @@
 package br.com.order.catalog.management.service;
 
-import br.com.order.catalog.management.dto.OrderDTO;
-import br.com.order.catalog.management.entity.Order;
+import br.com.order.catalog.management.domain.order.Order;
+import br.com.order.catalog.management.domain.order.OrderItem;
+import br.com.order.catalog.management.domain.order.PreOrder;
+import br.com.order.catalog.management.entity.OrderItemJpaEntity;
 import br.com.order.catalog.management.exceptions.ResourceNotFoundException;
 import br.com.order.catalog.management.mapper.OrderMapper;
+import br.com.order.catalog.management.repository.OrderItemRepository;
 import br.com.order.catalog.management.repository.OrderRepository;
-
-import jakarta.validation.Valid;
-
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.UUID;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DefaultOrderService implements OrderService {
@@ -22,42 +23,72 @@ public class DefaultOrderService implements OrderService {
 
   private final OrderRepository orderRepository;
 
+  private final OrderItemRepository orderItemRepository;
+
   private final OrderMapper orderMapper;
 
-  public DefaultOrderService(OrderRepository orderRepository, OrderMapper orderMapper) {
+  private final ProductService productService;
+
+  public DefaultOrderService(OrderRepository orderRepository,
+      OrderItemRepository orderItemRepository, OrderMapper orderMapper,
+      ProductService productService) {
     this.orderRepository = orderRepository;
+    this.orderItemRepository = orderItemRepository;
     this.orderMapper = orderMapper;
+    this.productService = productService;
   }
 
-  public OrderDTO getOrderById(UUID id) {
-    Order order = orderRepository.findById(id)
+  public Order getOrderById(UUID id) {
+    final var orderEntityJpa = orderRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException(PRODUCT_NOT_FOUND_ERROR_MESSAGE));
 
-    return orderMapper.toDTO(order);
+    return orderMapper.toDomain(orderEntityJpa);
   }
 
-  public Page<OrderDTO> getOrders(Pageable pageable) {
-    Page<Order> ordersPage = orderRepository.findAll(pageable);
-    return ordersPage.map(orderMapper::toDTO);
+  public Page<Order> getOrders(Pageable pageable) {
+    final var pageOrderEntity = orderRepository.findAll(pageable);
+    return pageOrderEntity.map(orderMapper::toDomain);
   }
 
-  public OrderDTO saveOrder(@Valid OrderDTO orderToBeSaved) {
-    Order order = orderMapper.toEntity(orderToBeSaved);
-    return orderMapper.toDTO(orderRepository.save(order));
+  @Transactional
+  public Order createOrder(PreOrder preOrder) {
+    final var orderItems = getOrderItems(preOrder);
+
+    final var order = Order.newOrder(preOrder.status(), orderItems, preOrder.discount());
+
+    final var orderEntity = orderMapper.toEntity(order);
+    return orderMapper.toDomain(orderRepository.save(orderEntity));
   }
 
-  public OrderDTO updateOrder(UUID id, @Valid OrderDTO orderToBeChanged) {
-    Order existingOrder = orderRepository.findById(id)
+  @Transactional
+  public Order updateOrder(UUID id, PreOrder preOrder) {
+
+    final var orderItems = getOrderItems(preOrder);
+
+    final var existingOrderEntity = orderRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException(PRODUCT_NOT_FOUND_ERROR_MESSAGE));
 
-    existingOrder.setItens(orderToBeChanged.items());
-    existingOrder.setStatus(orderToBeChanged.status());
-    existingOrder.setDiscount(orderToBeChanged.discount());
+    orderItemRepository.deleteAll(existingOrderEntity.getItems());
 
-    Order updatedOrder = orderRepository.save(existingOrder);
-    return orderMapper.toDTO(updatedOrder);
+    existingOrderEntity.setItems(new ArrayList<>(orderItems.stream()
+        .map(orderItem -> OrderItemJpaEntity.from(orderItem, existingOrderEntity)).toList()));
+    existingOrderEntity.setStatus(preOrder.status());
+    existingOrderEntity.setDiscount(preOrder.discount());
+
+    final var mergedOrder = orderRepository.save(existingOrderEntity);
+    return orderMapper.toDomain(mergedOrder);
   }
 
+  private HashSet<OrderItem> getOrderItems(PreOrder preOrder) {
+    // FIXME - PONTO DE FALHA
+    final var products = productService.getProductsById(preOrder.getItemIds());
+    final var orderItems = new HashSet<OrderItem>();
+    products.forEach(product -> orderItems.add(
+        OrderItem.newOrderItem(product, preOrder.getItemAmountByItemId(product.getId()))));
+    return orderItems;
+  }
+
+  @Transactional
   public void deleteOrderById(UUID id) {
     if (!orderRepository.existsById(id)) {
       throw new ResourceNotFoundException(PRODUCT_NOT_FOUND_ERROR_MESSAGE);

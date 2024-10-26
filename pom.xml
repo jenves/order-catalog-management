@@ -9,10 +9,10 @@
     <version>3.3.4</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
-  <groupId>br.com.order-catalog-management</groupId>
-  <artifactId>order-catalog-management</artifactId>
+  <groupId>br.com.orderJpaEntity-catalog-management</groupId>
+  <artifactId>orderJpaEntity-catalog-management</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>order-catalog-management</name>
+  <name>orderJpaEntity-catalog-management</name>
   <description>prova III</description>
   <url/>
   <licenses>
@@ -32,6 +32,7 @@
     <flyway.version>10.20.1</flyway.version>
   </properties>
   <dependencies>
+    <!-- Spring -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -46,15 +47,31 @@
     </dependency>
 
     <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.springframework.hateoas</groupId>
+      <artifactId>spring-hateoas</artifactId>
+      <version>2.3.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+      <version>2.6.0</version>
+    </dependency>
+
+    <!-- DB -->
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+  <!-- Mapper -->
     <dependency>
       <groupId>org.mapstruct</groupId>
       <artifactId>mapstruct</artifactId>
@@ -65,11 +82,6 @@
       <artifactId>mapstruct-processor</artifactId>
       <version>1.6.2</version>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.hateoas</groupId>
-      <artifactId>spring-hateoas</artifactId>
-      <version>2.3.3</version>
     </dependency>
 
     <!-- flyway-->

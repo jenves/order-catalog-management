@@ -1,9 +1,10 @@
 package br.com.order.catalog.management.dto;
 
-import br.com.order.catalog.management.domain.ProductType;
+import br.com.order.catalog.management.domain.product.ProductType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 public record ProductDTO(
@@ -14,7 +15,7 @@ public record ProductDTO(
 
         @NotNull(message = "Product price is required")
         @Positive(message = "Product price must be positive")
-        Double price,
+        BigDecimal price,
 
         @NotNull(message = "Product type is required")
         ProductType type,
